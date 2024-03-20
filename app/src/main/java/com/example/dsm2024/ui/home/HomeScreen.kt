@@ -113,18 +113,18 @@ fun HomeScreen() {
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),
-                        head = "Github",
+                        head = "Junsu Park",
                         title = "JunJaBoy",
                         content = "주접충",
                     )
 
                     `개쩌는 카드`(
                         modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight(),
-                        head = "Github",
-                        title = "Tmdhoon2",
-                        content = "똑똑한 청년.",
+                            .fillMaxWidth()
+                            .weight(1f),
+                        head = "Jungho Lee",
+                        title = "jeongho1209",
+                        content = "학생회장",
                     )
                 }
 
@@ -138,7 +138,7 @@ fun HomeScreen() {
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),
-                        head = "Github",
+                        head = "Haeun Choi",
                         title = "chlgkdms",
                         content = "개굴?",
                     )
@@ -147,11 +147,20 @@ fun HomeScreen() {
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),
-                        head = "Github",
+                        head = "Yeonwoo Kim",
                         title = "yeon0821",
                         content = "변절자",
                     )
                 }
+
+                `개쩌는 카드`(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    head = "Seunghoon Jung",
+                    title = "Tmdhoon2",
+                    content = "똑똑한 청년.",
+                )
             }
         }
     }
@@ -173,13 +182,13 @@ private fun `개쩌는 카드`(
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = head,
+                text = title,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.labelMedium,
             )
             Text(
                 style = MaterialTheme.typography.titleLarge,
-                text = title,
+                text = head,
                 color = MaterialTheme.colorScheme.primary,
             )
             Spacer(modifier = Modifier.height(8.dp))
