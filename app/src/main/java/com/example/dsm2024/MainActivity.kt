@@ -1,5 +1,6 @@
 package com.example.dsm2024
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -37,6 +38,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -47,9 +49,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.dsm2024.ui.home.HomeScreen
 import com.example.dsm2024.ui.theme.DSM2024Theme
+import com.example.dsm2024.ui.visitor.Comment
 import com.example.dsm2024.ui.visitor.VisitorLogScreen
+import java.time.LocalDateTime
 
 class MainActivity : ComponentActivity() {
+
+    private val sharedPref by lazy { getPreferences(Context.MODE_PRIVATE) }
+    private fun getAllVisitorLogs() = sharedPref.all.map { value ->
+        Comment(
+            date = LocalDateTime.parse(value.key),
+            value = value.value.toString(),
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -59,7 +72,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    `개쩌는 화면`()
+                    val list = remember { getAllVisitorLogs().toMutableList() }
+                    `개쩌는 화면`(
+                        onWriteVisitorLog = { comment: Comment ->
+                            with(sharedPref.edit()) {
+                                putString(comment.date.toString(), comment.value)
+                                apply()
+                            }
+                            list.add(comment)
+                        },
+                        visitorLogs = list,
+                    )
                 }
             }
         }
@@ -68,7 +91,10 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun `개쩌는 화면`() {
+private fun `개쩌는 화면`(
+    onWriteVisitorLog: (Comment) -> Unit,
+    visitorLogs: List<Comment>,
+) {
 
     val (currentSection, onChangeCurrentSection) = remember {
         mutableStateOf(MainSections.HOME)
@@ -104,7 +130,10 @@ private fun `개쩌는 화면`() {
         ) {
             when (currentSection) {
                 MainSections.HOME -> HomeScreen()
-                MainSections.VISITOR_LOGS -> VisitorLogScreen()
+                MainSections.VISITOR_LOGS -> VisitorLogScreen(
+                    onWriteVisitorLog = onWriteVisitorLog,
+                    visitorLogs = visitorLogs,
+                )
             }
         }
     }

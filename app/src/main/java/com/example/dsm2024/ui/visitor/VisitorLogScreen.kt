@@ -32,30 +32,17 @@ import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VisitorLogScreen() {
+fun VisitorLogScreen(
+    onWriteVisitorLog: (Comment) -> Unit,
+    visitorLogs: List<Comment>,
+) {
     val (comment, onChangeComment) = remember { mutableStateOf("") }
-
-    val comments = rememberSaveable {
-        mutableListOf<Comment>()
-    }
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .imePadding(),
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "방명록") },
-                navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.img_dsm),
-                            contentDescription = "DSM 로고",
-                        )
-                    }
-                }
-            )
-        },
+        topBar = { TopAppBar(title = { Text(text = "방명록") }) },
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -66,7 +53,7 @@ fun VisitorLogScreen() {
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                items(comments) { comment ->
+                items(visitorLogs) { comment ->
                     Comment(
                         modifier = Modifier.fillMaxWidth(),
                         comment = comment,
@@ -82,7 +69,7 @@ fun VisitorLogScreen() {
                     {
                         IconButton(
                             onClick = {
-                                comments.add(
+                                onWriteVisitorLog(
                                     Comment(
                                         value = comment,
                                         date = LocalDateTime.now(),
