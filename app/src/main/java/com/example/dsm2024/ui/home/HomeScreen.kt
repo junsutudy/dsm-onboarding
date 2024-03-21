@@ -51,10 +51,18 @@ fun HomeScreen() {
     val images = listOf(
         R.drawable.img_main_landscape,
         R.drawable.img_main_cafeteria_floor_1,
+        R.drawable.img_main_dsm_field_view,
         R.drawable.img_main_lecture,
         R.drawable.img_main_cafeteria_floor_1_2,
+        R.drawable.img_main_introduction_of_company,
+        R.drawable.img_main_exercising,
+        R.drawable.img_main_king_of_daejeon_education,
         R.drawable.img_main_jobis_members,
+        R.drawable.img_main_the_legend_three_2,
+        R.drawable.img_main_the_legend_three,
         R.drawable.img_main_dms_star_gogo,
+        R.drawable.img_main_vice_president,
+        R.drawable.img_main_walkhub,
     )
     val pagerState = rememberPagerState { images.size }
 
