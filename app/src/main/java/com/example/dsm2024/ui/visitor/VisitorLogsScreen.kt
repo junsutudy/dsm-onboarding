@@ -31,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -93,7 +94,10 @@ fun VisitorLogsScreen(
                                     ),
                                 )
                                 onChangeComment("")
-                                scope.launch { state.scrollToItem(index = visitorLogs.lastIndex) }
+                                scope.launch {
+                                    delay(300)
+                                    state.animateScrollToItem(index = visitorLogs.lastIndex)
+                                }
                             },
                         ) {
                             Icon(

@@ -1,5 +1,7 @@
 package com.example.dsm2024.ui.home
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.dsm2024.R
@@ -37,6 +41,8 @@ import com.example.dsm2024.R
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -116,6 +122,18 @@ fun HomeScreen() {
                         head = "Junsu Park",
                         title = "JunJaBoy",
                         content = "주접충",
+                        onClick = {
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://github.com/JunJaBoy"),
+                                ),
+                            )
+                        },
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        ),
                     )
 
                     `개쩌는 카드`(
@@ -125,6 +143,14 @@ fun HomeScreen() {
                         head = "Jungho Lee",
                         title = "jeongho1209",
                         content = "학생회장",
+                        onClick = {
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://github.com/jeongho1209"),
+                                ),
+                            )
+                        },
                     )
                 }
 
@@ -141,6 +167,14 @@ fun HomeScreen() {
                         head = "Haeun Choi",
                         title = "chlgkdms",
                         content = "개굴?",
+                        onClick = {
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://github.com/chlgkdms"),
+                                ),
+                            )
+                        },
                     )
 
                     `개쩌는 카드`(
@@ -150,6 +184,14 @@ fun HomeScreen() {
                         head = "Yeonwoo Kim",
                         title = "yeon0821",
                         content = "변절자",
+                        onClick = {
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://github.com/yeon0821"),
+                                ),
+                            )
+                        },
                     )
                 }
 
@@ -160,21 +202,34 @@ fun HomeScreen() {
                     head = "Seunghoon Jung",
                     title = "Tmdhoon2",
                     content = "똑똑한 청년.",
+                    onClick = {
+                        context.startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://github.com/Tmdhoon2"),
+                            ),
+                        )
+                    },
                 )
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun `개쩌는 카드`(
     modifier: Modifier = Modifier,
     head: String,
     title: String,
     content: String,
+    onClick: () -> Unit = {},
+    colors: CardColors = CardDefaults.cardColors(),
 ) {
     Card(
         modifier = modifier,
+        onClick = onClick,
+        colors = colors,
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
