@@ -30,6 +30,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -37,11 +39,39 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.dsm2024.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    val images = listOf(
+        R.drawable.img_main_landscape,
+        R.drawable.img_main_cafeteria_floor_1,
+        R.drawable.img_main_lecture,
+        R.drawable.img_main_cafeteria_floor_1_2,
+        R.drawable.img_main_jobis_members,
+        R.drawable.img_main_dms_star_gogo,
+    )
+    val pagerState = rememberPagerState { images.size }
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            while (true) {
+                delay(2000L)
+                pagerState.animateScrollToPage(
+                    if (pagerState.currentPage == pagerState.pageCount - 1) {
+                        0
+                    } else {
+                        pagerState.currentPage + 1
+                    },
+                )
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -63,16 +93,6 @@ fun HomeScreen() {
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            val images = listOf(
-                R.drawable.img_main_landscape,
-                R.drawable.img_main_cafeteria_floor_1,
-                R.drawable.img_main_lecture,
-                R.drawable.img_main_cafeteria_floor_1_2,
-                R.drawable.img_main_jobis_members,
-                R.drawable.img_main_dms_star_gogo,
-            )
-
-            val pagerState = rememberPagerState { images.size }
             HorizontalPager(
                 modifier = Modifier.fillMaxWidth(),
                 state = pagerState,
@@ -81,6 +101,7 @@ fun HomeScreen() {
                     horizontal = 16.dp,
                 ),
                 pageSpacing = 8.dp,
+                userScrollEnabled = false,
             ) { pageIndex ->
                 ElevatedCard(
                     modifier = Modifier
