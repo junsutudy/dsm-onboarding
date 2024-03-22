@@ -17,6 +17,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
@@ -126,11 +129,52 @@ fun HomeScreen() {
                     )
                 }
             }
-            Box(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                LinearProgressIndicator(progress = (pagerState.currentPage + 1) / images.size.toFloat())
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp),
+                    progress = (pagerState.currentPage + 1) / images.size.toFloat(),
+                )
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(
+                                page = if (pagerState.currentPage == 0) {
+                                    pagerState.pageCount
+                                } else {
+                                    pagerState.currentPage - 1
+                                },
+                            )
+                        }
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowLeft,
+                        contentDescription = null,
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(
+                                page = if (pagerState.currentPage == pagerState.pageCount - 1) {
+                                    0
+                                } else {
+                                    pagerState.currentPage + 1
+                                },
+                            )
+                        }
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowRight,
+                        contentDescription = null,
+                    )
+                }
             }
             Column(
                 modifier = Modifier
@@ -223,23 +267,45 @@ fun HomeScreen() {
                         },
                     )
                 }
-
-                `개쩌는 카드`(
+                Row(
                     modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    head = "Seunghoon Jung",
-                    title = "Tmdhoon2",
-                    content = "똑똑한 청년.",
-                    onClick = {
-                        context.startActivity(
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse("https://github.com/Tmdhoon2"),
-                            ),
-                        )
-                    },
-                )
+                        .fillMaxWidth()
+                        .weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    `개쩌는 카드`(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        head = "Seunghoon Jung",
+                        title = "Tmdhoon2",
+                        content = "똑똑한 청년.",
+                        onClick = {
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://github.com/Tmdhoon2"),
+                                ),
+                            )
+                        },
+                    )
+                    `개쩌는 카드`(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        head = "Kanghyuk Lee",
+                        title = "gurdl0525",
+                        content = "백엔드 해라",
+                        onClick = {
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://github.com/gurdl0525"),
+                                ),
+                            )
+                        },
+                    )
+                }
             }
         }
     }
