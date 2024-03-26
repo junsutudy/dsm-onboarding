@@ -3,6 +3,7 @@ package com.example.dsm2024.data
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.Retrofit
 
 object VisitorRepository {
@@ -20,4 +21,7 @@ object VisitorRepository {
             )
         }
     }
+
+    fun getAllVisitorLogs(): List<VisitorLogResponse> =
+        runBlocking(Dispatchers.IO) { visitorApiService.getVisitorLogs() }
 }

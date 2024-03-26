@@ -1,5 +1,6 @@
 package com.example.dsm2024.ui.visitor
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +12,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,16 +22,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -44,9 +45,53 @@ fun VisitorLogsScreen(
     visitorLogs: List<Comment>,
 ) {
     val scope = rememberCoroutineScope()
-    val (comment, onChangeComment) = remember { mutableStateOf("") }
+    val (comment, changeComment) = remember { mutableStateOf("") }
 
+    val listState = rememberLazyListState()
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val (shouldShowConfirmCommentDialog, onShouldShowConfirmCommentDialogChange) = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (shouldShowConfirmCommentDialog) {
+        AlertDialog(
+            onDismissRequest = { onShouldShowConfirmCommentDialogChange(false) },
+            title = { Text(text = "방명록 등록") },
+            text = { Text(text = "방명록을 등록하시겠어요? 한 번 등록하면 삭제할 수 없어요. 다른 사람을 존중하는 댓글을 작성해 주세요.") },
+            confirmButton = {
+                val context = LocalContext.current
+                Button(
+                    onClick = {
+                        onWriteVisitorLog(
+                            Comment(
+                                value = comment,
+                                date = LocalDateTime.now(),
+                            ),
+                        )
+                        changeComment("")
+                        scope.launch {
+                            delay(300)
+                            listState.animateScrollToItem(index = 0)
+                        }
+                        onShouldShowConfirmCommentDialogChange(false)
+                        Toast.makeText(context, "방명록 등록했지롱~", Toast.LENGTH_SHORT).show()
+                    },
+                ) {
+                    Text(text = "확인")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        onShouldShowConfirmCommentDialogChange(false)
+                    },
+                ) {
+                    Text(text = "취소")
+                }
+            }
+        )
+    }
+
     Scaffold(
         modifier = Modifier
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
@@ -65,9 +110,8 @@ fun VisitorLogsScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            val state = rememberLazyListState()
             LazyColumn(
-                state = state,
+                state = listState,
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
@@ -82,24 +126,12 @@ fun VisitorLogsScreen(
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = comment,
-                onValueChange = onChangeComment,
+                onValueChange = changeComment,
                 label = { Text(text = "댓글을 입력해주세요") },
                 trailingIcon = if (comment.isNotEmpty()) {
                     {
                         IconButton(
-                            onClick = {
-                                onWriteVisitorLog(
-                                    Comment(
-                                        value = comment,
-                                        date = LocalDateTime.now(),
-                                    ),
-                                )
-                                onChangeComment("")
-                                scope.launch {
-                                    delay(300)
-                                    state.animateScrollToItem(index = visitorLogs.lastIndex)
-                                }
-                            },
+                            onClick = { onShouldShowConfirmCommentDialogChange(true) },
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Done,

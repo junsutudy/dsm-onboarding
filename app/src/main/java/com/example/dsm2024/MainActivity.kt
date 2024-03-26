@@ -21,6 +21,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.dsm2024.data.VisitorRepository
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
             date = LocalDateTime.parse(value.key),
             value = value.value.toString(),
         )
-    }
+    }.sortedByDescending { it.date }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,15 +50,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    val list = remember { getAllVisitorLogs().toMutableList() }
+                    val list = rememberSaveable { getAllVisitorLogs().toMutableList() }
                     `개쩌는 화면`(
                         onWriteVisitorLog = { comment: Comment ->
                             with(sharedPref.edit()) {
                                 putString(comment.date.toString(), comment.value)
                                 apply()
                             }
-                            list.add(comment)
-                            VisitorRepository.writeVisitorLog(message = comment.value)
+                            runCatching {
+                                VisitorRepository.writeVisitorLog(comment.value)
+                            }.onSuccess {
+                                list.add(0, comment)
+                            }
                         },
                         visitorLogs = list,
                     )
