@@ -75,6 +75,7 @@ fun VisitorLogsScreen(
                     Comment(
                         modifier = Modifier.fillMaxWidth(),
                         comment = comment,
+                        // "나는 ⌜안드로이드⌟ 다." "어어.. 이제야 눈을 뜬건가?"
                     )
                 }
             }

@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.dsm2024.data.VisitorRepository
 import com.example.dsm2024.ui.home.HomeScreen
 import com.example.dsm2024.ui.theme.DSM2024Theme
 import com.example.dsm2024.ui.visitor.Comment
@@ -56,6 +57,7 @@ class MainActivity : ComponentActivity() {
                                 apply()
                             }
                             list.add(comment)
+                            VisitorRepository.writeVisitorLog(message = comment.value)
                         },
                         visitorLogs = list,
                     )
